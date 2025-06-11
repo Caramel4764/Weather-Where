@@ -167,3 +167,27 @@ p {
 .minorTextInfo {
   font-size: 20px;
 }
+
+#danger {
+  color:white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin: 20px;
+  display:grid;
+  gap: 10px;
+  grid-template-columns: 1fr;
+}
+
+.danger-bg {
+  background-color: rgb(192, 0, 0);
+  padding: 20px;
+  border-radius: 10px;
+  gap: 15px;
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.danger-desc{
+  white-space: pre-wrap;
+}

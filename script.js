@@ -6,6 +6,7 @@ const searchBar = document.querySelector('#searchbar');
 const searchBtn = document.querySelector('#searchbar-send-btn');
 const overviewBg = document.querySelector('#overview-bg');
 
+const danger = document.querySelector('#danger');
 const sunSetAmPm = document.querySelector("#sunSetAmPm");
 const sunRiseAmPm = document.querySelector("#sunRiseAmPm");
 const rainChance = document.querySelector("#rainChance");
@@ -58,7 +59,10 @@ async function updateWeather (city) {
   sunRiseAmPm.textContent = regularTimeSet.amPm;
   humidity.textContent = currDay.humidity;
   cloudyness.textContent = currDay.cloudcover;
-  getRegularTime(currDay.sunset)
+  getRegularTime(currDay.sunset);
+  if (data.alerts) {
+    displayWarning(data.alerts);
+  }
 }
 function getRegularTime(militaryTime) {
   let hour = Number(militaryTime.substring(0,2));
@@ -67,6 +71,21 @@ function getRegularTime(militaryTime) {
     return {hour:hour-12, minute, amPm:'PM'};
   } else {
     return {hour:hour, minute, amPm:'AM'};
+  }
+}
+function displayWarning(warnings) {
+  danger.innerHTML = "";
+  for(let i = 0; i<warnings.length; i++) {
+    let div = document.createElement('div');
+    div.classList.add('danger-bg', 'flex');
+    danger.appendChild(div);
+    let warning = document.createElement('h1');
+    let dangerDesc = document.createElement('p');
+    dangerDesc.classList.add('danger-desc');
+    div.appendChild(warning);
+    div.appendChild(dangerDesc);
+    warning.textContent = "Warning: "+warnings[i].event;
+    dangerDesc.textContent = warnings[i].description;
   }
 }
 function getTempColor(temp) {
@@ -98,9 +117,6 @@ function getTempColor(temp) {
   } else {
     color = "#002DC0";
   }
-  console.log (temp>60)
-  console.log(temp);
-  console.log(color)
   return color;
 }
 function convertPascalCase(word) {
@@ -121,4 +137,4 @@ function convertPascalCase(word) {
   return converted;
 }
 
-updateWeather('london');
+updateWeather('sawtooth');
