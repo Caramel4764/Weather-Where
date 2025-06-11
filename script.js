@@ -5,6 +5,8 @@ const tempMin = document.querySelector('#tempMin');
 const searchBar = document.querySelector('#searchbar');
 const searchBtn = document.querySelector('#searchbar-send-btn');
 const overviewBg = document.querySelector('#overview-bg');
+const forcast = document.querySelector('#forcast-div');
+const condition = document.querySelector('#condition-text');
 
 const danger = document.querySelector('#danger');
 const sunSetAmPm = document.querySelector("#sunSetAmPm");
@@ -63,6 +65,34 @@ async function updateWeather (city) {
   if (data.alerts) {
     displayWarning(data.alerts);
   }
+  forcast.innerHTML = "";
+  condition.textContent = data.currentConditions.conditions;
+  let forecastIcon = createForecastIcon(data.currentConditions.conditions);
+  console.log(forecastIcon)
+  forcast.appendChild(forecastIcon);
+
+}
+function createForecastIcon(forecast) {
+  let forecastIcon = document.createElement('i');
+  if (forecast.indexOf("Hail") != -1) {
+    forecastIcon.classList.add('bi', 'bi-cloud-sleet', 'forecast-icon');
+  } else if (forecast.indexOf("Snow") != -1) {
+    forecastIcon.classList.add('bi', 'bi-cloud-snow', 'forecast-icon');
+  } else if (forecast.indexOf("Rain") != -1) {
+    forecastIcon.classList.add('bi', 'bi-cloud-drizzle', 'forecast-icon');
+  } else if (forecast.indexOf("Partially cloudy") != -1) {
+    forecastIcon.classList.add('bi', 'bi-cloud-sun', 'forecast-icon');
+  } else if (forecast.indexOf("Cloudy") != -1) {
+    forecastIcon.classList.add('bi', 'bi-cloudy', 'forecast-icon');
+  } else if (forecast.indexOf("Overcast") != -1) {
+    forecastIcon.classList.add('bi', 'bi-clouds', 'forecast-icon');
+  } else if (forecast.indexOf("Clear") != -1) {
+    forecastIcon.classList.add('bi', 'bi-sun', 'forecast-icon');
+  } else {
+    forecastIcon.classList.add('bi', 'bi-patch-question', 'forecast-icon');
+  }
+  
+  return forecastIcon;
 }
 function getRegularTime(militaryTime) {
   let hour = Number(militaryTime.substring(0,2));

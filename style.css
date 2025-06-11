@@ -114,7 +114,7 @@ p {
   padding: 30px 10px;
 }
 .card svg {
-  padding: 10px 20px;
+  padding: 10px 0px 10px 20px;
 }
 .info-card div {
   font-size: 45px;
@@ -190,4 +190,34 @@ p {
 }
 .danger-desc{
   white-space: pre-wrap;
+}
+#forcast-div {
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(255, 255, 255);
+  border: 8px solid black;
+  flex-direction: column;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+#forcast-div h3{
+  margin: 0;
+}
+#overcast-center-div {
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+#condition-text{
+  font-size: 25px;
+  font-weight: 400;
+  margin-bottom: 15px;
+  color:rgb(80, 80, 80)
+}
+.forecast-icon {
+  font-size: 150px;
 }
