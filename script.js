@@ -7,6 +7,11 @@ const searchBtn = document.querySelector('#searchbar-send-btn');
 const overviewBg = document.querySelector('#overview-bg');
 const forcast = document.querySelector('#forcast-div');
 const condition = document.querySelector('#condition-text');
+const hourSelectionDiv = document.querySelector('#hourSelectionDiv');
+const caroHidden = document.querySelector('#caro-hidden');
+const hourlyRightCarousel = document.querySelector('#hourlyRightCarousel');
+const hourlyLeftCarousel = document.querySelector('#hourlyLeftCarousel');
+
 
 const danger = document.querySelector('#danger');
 const sunSetAmPm = document.querySelector("#sunSetAmPm");
@@ -18,6 +23,8 @@ const sunriseTime = document.querySelector("#sunRiseTime");
 const cloudyness = document.querySelector("#cloudyness");
 const humidity = document.querySelector("#humidity");
 
+let caroIndex = 0;
+let cardNum = 0;
 let city = "elk grove";
 const APIkey = "AWQDP4A7HBA8L97EMKCSQTSWR";
 searchBar.addEventListener('keyup', function(e) {
@@ -31,6 +38,8 @@ searchBtn.addEventListener('click', function() {
   city = searchBar.value;
   updateWeather(city);
 })
+hourlyLeftCarousel.addEventListener('click', moveCarouselLeft);
+hourlyRightCarousel.addEventListener('click', moveCarouselRight);
 async function fetchWeather (city) {
   try {
     let res = await fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${city}?key=${APIkey}`, {mode:"cors"});
@@ -70,28 +79,28 @@ async function updateWeather (city) {
   let forecastIcon = createForecastIcon(data.currentConditions.conditions);
   console.log(forecastIcon)
   forcast.appendChild(forecastIcon);
-
+  updateDayWeather(data.days);
 }
-function createForecastIcon(forecast) {
+function createForecastIcon(forecast, size = 100) {
   let forecastIcon = document.createElement('i');
   if (forecast.indexOf("Hail") != -1) {
-    forecastIcon.classList.add('bi', 'bi-cloud-sleet', 'forecast-icon');
+    forecastIcon.classList.add('bi', 'bi-cloud-sleet');
   } else if (forecast.indexOf("Snow") != -1) {
-    forecastIcon.classList.add('bi', 'bi-cloud-snow', 'forecast-icon');
+    forecastIcon.classList.add('bi', 'bi-cloud-snow');
   } else if (forecast.indexOf("Rain") != -1) {
-    forecastIcon.classList.add('bi', 'bi-cloud-drizzle', 'forecast-icon');
+    forecastIcon.classList.add('bi', 'bi-cloud-drizzle');
   } else if (forecast.indexOf("Partially cloudy") != -1) {
-    forecastIcon.classList.add('bi', 'bi-cloud-sun', 'forecast-icon');
+    forecastIcon.classList.add('bi', 'bi-cloud-sun');
   } else if (forecast.indexOf("Cloudy") != -1) {
-    forecastIcon.classList.add('bi', 'bi-cloudy', 'forecast-icon');
+    forecastIcon.classList.add('bi', 'bi-cloudy');
   } else if (forecast.indexOf("Overcast") != -1) {
-    forecastIcon.classList.add('bi', 'bi-clouds', 'forecast-icon');
+    forecastIcon.classList.add('bi', 'bi-clouds');
   } else if (forecast.indexOf("Clear") != -1) {
-    forecastIcon.classList.add('bi', 'bi-sun', 'forecast-icon');
+    forecastIcon.classList.add('bi', 'bi-sun');
   } else {
-    forecastIcon.classList.add('bi', 'bi-patch-question', 'forecast-icon');
+    forecastIcon.classList.add('bi', 'bi-patch-question');
   }
-  
+  forecastIcon.style.fontSize = `${size}px`;
   return forecastIcon;
 }
 function getRegularTime(militaryTime) {
@@ -166,5 +175,52 @@ function convertPascalCase(word) {
   }
   return converted;
 }
+function updateDayWeather(days) {
+  for (let i = 0; i<days.length; i++) {
+    let hourlyCard = document.createElement('div');
+    let cardDate = document.createElement('p');
+    let cardIcon = document.createElement('div');
+    let cardTemp = document.createElement('div');
+    let cardTempText = document.createElement('p');
+    let cardIconI = createForecastIcon(days[i].conditions, 50);
+    hourlyCard.classList.add('hourlyCard');
+    cardDate.classList.add('hourlyCardDate');
+    if (i == 0) {
+      cardDate.textContent = "Today";
+    } else {
+      cardDate.textContent = convertDate(days[i].datetime);
+    }
+    cardIcon.classList.add('hourlyIcon');
+    cardTemp.classList.add('flex');
+    cardTemp.textContent = days[i].temp;
+    cardTempText.classList.add('hourlyCardTemp');
+    cardIcon.appendChild(cardIconI);
+    hourlyCard.appendChild(cardDate);
+    hourlyCard.appendChild(cardIcon);
+    hourlyCard.appendChild(cardTemp);
+    cardTemp.appendChild(cardTempText);
+    hourSelectionDiv.appendChild(hourlyCard);
+  }
+  //how many card in carousel
+  cardNum = Math.floor(caroHidden.offsetWidth/150)
+  caroHidden.style.width = 150*cardNum+(cardNum-1)*10+"px";
+}
+//formated mm/dd
+function convertDate(date) {
+  let day = date.substring(8, 10);
+  let month = date.substring(5, 7);
+  return `${month}/${day}`;
+}
 
+function moveCarouselRight() {
+  //caroHidden
+  //hourSelectionDiv
+  caroIndex++;
+  hourSelectionDiv.style.left = -1*caroIndex*(cardNum*150 + cardNum*10) + "px";
+}
+function moveCarouselLeft() {
+
+  caroIndex--;
+  hourSelectionDiv.style.left = -1*caroIndex*(cardNum*150 + cardNum*10) + "px";
+}
 updateWeather('sawtooth');
