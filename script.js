@@ -11,7 +11,7 @@ const hourSelectionDiv = document.querySelector('#hourSelectionDiv');
 const caroHidden = document.querySelector('#caro-hidden');
 const hourlyRightCarousel = document.querySelector('#hourlyRightCarousel');
 const hourlyLeftCarousel = document.querySelector('#hourlyLeftCarousel');
-
+const totalCardNum = 15;
 
 const danger = document.querySelector('#danger');
 const sunSetAmPm = document.querySelector("#sunSetAmPm");
@@ -22,11 +22,40 @@ const sunsetTime = document.querySelector("#sunSetTime");
 const sunriseTime = document.querySelector("#sunRiseTime");
 const cloudyness = document.querySelector("#cloudyness");
 const humidity = document.querySelector("#humidity");
+const hourlyChartCanvas = document.querySelector('#hourlyChartCanvas');
+const ctx = document.getElementById('hourlyChartCanvas').getContext('2d');
+const chartData = {
+  labels: ['1am', '2am', '3am', '4am', '5am', '6am', '7am', '8am', '9am', '10am', '11am', '12am', '1pm', '2pm', '3pm', '4pm', '5pm', '6pm', '7pm', '8pm', '9pm', '10pm', '11pm', '12pm'],
+  datasets: [
+    {
+      label: 'Temperature',
+      data: [10],
+      borderColor: 'rgba(75, 192, 192, 1)',
+      backgroundColor: 'rgba(73, 129, 129, 0.2)',
+      borderWidth: 2,
+      tension: 0.4, // Smooth curve
+    },
+  ],
+};
 
+const options = {
+  indexAxis: 'x',
+  xAxis: {
+    type: 'time',
+  }
+};
+
+let chart = new Chart(ctx, {
+  type: 'line',
+  data: chartData,
+  options: options,
+});
+let currentDay = 0;
 let caroIndex = 0;
 let cardNum = 0;
 let city = "elk grove";
 const APIkey = "AWQDP4A7HBA8L97EMKCSQTSWR";
+
 searchBar.addEventListener('keyup', function(e) {
   if (e.keyCode === 13) {
     city = searchBar.value;
@@ -43,11 +72,24 @@ hourlyRightCarousel.addEventListener('click', moveCarouselRight);
 async function fetchWeather (city) {
   try {
     let res = await fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${city}?key=${APIkey}`, {mode:"cors"});
-    let data = await res.json();
+    let data = await res.json();;
     return data;
     } catch (error) {
       alert("Please enter a valid city.");
     }
+}
+async function getHourlyTemp (dayFromToday) {
+  let data = await fetchWeather(city).then(
+    function(data) {
+      let upcomingTemps = [];
+      for (let i = 0; i<data.days[dayFromToday].hours.length; i++) {
+          upcomingTemps.push(data.days[dayFromToday].hours[i].temp);
+      }
+      chartData.datasets[0].data = upcomingTemps;
+    }
+  ).then(function() {
+    drawHourlyChart();
+  })
 }
 async function updateWeather (city) {
   city = convertPascalCase(city);
@@ -80,6 +122,27 @@ async function updateWeather (city) {
   console.log(forecastIcon)
   forcast.appendChild(forecastIcon);
   updateDayWeather(data.days);
+}
+function drawHourlyChart() {
+  console.log('test')
+  chart.destroy();
+  chart = new Chart(ctx, {
+    type: 'line',
+    data: chartData,
+    options: options,
+  });
+}
+function updateCaroBtnVisibility() {
+  if (caroIndex == 0) {
+    hourlyLeftCarousel.style.visibility = "hidden";
+  } else {
+    hourlyLeftCarousel.style.visibility = "visible";
+  }
+  if (caroIndex >= (totalCardNum/cardNum)-1) {
+    hourlyRightCarousel.style.visibility = "hidden";
+  } else {
+    hourlyRightCarousel.style.visibility = "visible";
+  }
 }
 function createForecastIcon(forecast, size = 100) {
   let forecastIcon = document.createElement('i');
@@ -178,6 +241,10 @@ function convertPascalCase(word) {
 function updateDayWeather(days) {
   for (let i = 0; i<days.length; i++) {
     let hourlyCard = document.createElement('div');
+    hourlyCard.addEventListener('click', () => {
+      currentDay = i;
+      getHourlyTemp(i);
+    })
     let cardDate = document.createElement('p');
     let cardIcon = document.createElement('div');
     let cardTemp = document.createElement('div');
@@ -211,16 +278,21 @@ function convertDate(date) {
   let month = date.substring(5, 7);
   return `${month}/${day}`;
 }
-
+function updateCaro() {
+  hourSelectionDiv.style.left = -1*caroIndex*(cardNum*150 + cardNum*10) + "px";
+  updateCaroBtnVisibility();
+}
 function moveCarouselRight() {
   //caroHidden
   //hourSelectionDiv
   caroIndex++;
-  hourSelectionDiv.style.left = -1*caroIndex*(cardNum*150 + cardNum*10) + "px";
+  updateCaro();
 }
 function moveCarouselLeft() {
-
   caroIndex--;
-  hourSelectionDiv.style.left = -1*caroIndex*(cardNum*150 + cardNum*10) + "px";
+  updateCaro();
 }
 updateWeather('sawtooth');
+updateCaroBtnVisibility();
+
+getHourlyTemp(currentDay);
