@@ -12,6 +12,8 @@ const caroHidden = document.querySelector('#caro-hidden');
 const hourlyRightCarousel = document.querySelector('#hourlyRightCarousel');
 const hourlyLeftCarousel = document.querySelector('#hourlyLeftCarousel');
 const totalCardNum = 15;
+const currTempText = document.querySelector('#currTempText');
+const currentTempIconDiv = document.querySelector('#currentTemp-icon-div');
 
 const danger = document.querySelector('#danger');
 const sunSetAmPm = document.querySelector("#sunSetAmPm");
@@ -39,9 +41,21 @@ const chartData = {
 };
 
 const options = {
+  responsive: true,
+  scales: {
+    y: {
+          min: -35, // Set the minimum value
+          max: 135, // Set the maximum value
+    }
+  },
   indexAxis: 'x',
   xAxis: {
     type: 'time',
+  },
+  plugins: {
+    legend: {
+      display: false // Disables the entire legend
+    }
   }
 };
 
@@ -53,8 +67,14 @@ let chart = new Chart(ctx, {
 let currentDay = 0;
 let caroIndex = 0;
 let cardNum = 0;
+
 let city = "elk grove";
 const APIkey = "AWQDP4A7HBA8L97EMKCSQTSWR";
+
+window.addEventListener('resize', () => {
+  calcCaro();
+
+});
 
 searchBar.addEventListener('keyup', function(e) {
   if (e.keyCode === 13) {
@@ -79,6 +99,7 @@ async function fetchWeather (city) {
     }
 }
 async function getHourlyTemp (dayFromToday) {
+  console.log(dayFromToday);
   let data = await fetchWeather(city).then(
     function(data) {
       let upcomingTemps = [];
@@ -122,9 +143,11 @@ async function updateWeather (city) {
   console.log(forecastIcon)
   forcast.appendChild(forecastIcon);
   updateDayWeather(data.days);
+  getHourlyTemp(currentDay);
+  currTempText.textContent = data.days[0].temp;
+  currentTempIconDiv.appendChild(createForecastIcon(data.days[0].conditions, 70));
 }
 function drawHourlyChart() {
-  console.log('test')
   chart.destroy();
   chart = new Chart(ctx, {
     type: 'line',
@@ -243,7 +266,7 @@ function updateDayWeather(days) {
     let hourlyCard = document.createElement('div');
     hourlyCard.addEventListener('click', () => {
       currentDay = i;
-      getHourlyTemp(i);
+      getHourlyTemp(currentDay);
     })
     let cardDate = document.createElement('p');
     let cardIcon = document.createElement('div');
@@ -269,7 +292,11 @@ function updateDayWeather(days) {
     hourSelectionDiv.appendChild(hourlyCard);
   }
   //how many card in carousel
-  cardNum = Math.floor(caroHidden.offsetWidth/150)
+  calcCaro();
+}
+function calcCaro() {
+  caroHidden.style.width = window.innerWidth+"px";
+  cardNum = Math.floor(caroHidden.offsetWidth/150);
   caroHidden.style.width = 150*cardNum+(cardNum-1)*10+"px";
 }
 //formated mm/dd
@@ -292,7 +319,6 @@ function moveCarouselLeft() {
   caroIndex--;
   updateCaro();
 }
+
 updateWeather('sawtooth');
 updateCaroBtnVisibility();
-
-getHourlyTemp(currentDay);

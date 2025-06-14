@@ -264,6 +264,7 @@ p {
   justify-content: center;
   align-items: center;
   padding: 10px 0px;
+  margin: 30px 0;
 }
 
 .hourlyCarouselBtn {
@@ -286,7 +287,6 @@ p {
 }
 #caro-hidden {
   overflow:hidden;
-
 }
 .hourlyCard {
   background-color: burlywood;
