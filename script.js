@@ -144,8 +144,14 @@ async function updateWeather (city) {
   forcast.appendChild(forecastIcon);
   updateDayWeather(data.days);
   getHourlyTemp(currentDay);
-  currTempText.textContent = data.days[0].temp;
+  currTempText.textContent = data.days[0].hours[getCurrentHour()].temp;
   currentTempIconDiv.appendChild(createForecastIcon(data.days[0].conditions, 70));
+}
+function getCurrentHour() {
+  let date = new Date();
+  let hour = date.getHours();
+  console.log({hour})
+  return hour
 }
 function drawHourlyChart() {
   chart.destroy();
