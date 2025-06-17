@@ -1,9 +1,38 @@
+import info from './info.js';
+
 let util = (function(){
-  function getCurrentHour() {
-    let date = new Date();
-    let hour = date.getHours();
-    return hour
+  function getCurrentHour(isMilitaryTime = true) {
+    if (isMilitaryTime){
+      let date = new Date();
+      let hour = date.getHours();
+      return hour;
+    }
   }
+  function findLowestTemp(){
+    let data = info.data;
+    let lowestTemp = data.days[0].hours[0].temp;
+    for (let i = 0; i<data.days.length; i++) {
+      for(let j = 0; j<data.days[i].hours.length; j++) {
+        if (data.days[i].hours[j].temp < lowestTemp) {
+        lowestTemp = data.days[i].hours[j].temp;
+        }
+      }
+    }
+    return lowestTemp;
+  }
+  function findHighestTemp(){
+    let data = info.data;
+    let highestTemp = data.days[0].hours[0].temp;
+    for (let i = 0; i<data.days.length; i++) {
+      for(let j = 0; j<data.days[i].hours.length; j++) {
+        if (data.days[i].hours[j].temp > highestTemp) {
+        highestTemp = data.days[i].hours[j].temp;
+        }
+      }
+    }
+    return highestTemp;
+  }
+
   function createForecastIcon(forecast, size = 100) {
     let forecastIcon = document.createElement('i');
     if (forecast.indexOf("Hail") != -1) {
@@ -91,7 +120,20 @@ let util = (function(){
       return {hour:hour, minute, amPm:'AM'};
     }
   }
-  return {getCurrentHour, createForecastIcon, convertDate, getTempColor, convertPascalCase, getRegularTime};
+  function calcScreenWidth() {
+    let width = window.innerWidth;
+    let size;
+    if (width <= 480) {
+      size = "phone";
+    } else if (width <= 768) {
+      size = "tablet";
+    } else {
+      size = "desktop";
+    }
+    return size;
+  }
+  
+  return {getCurrentHour, findLowestTemp, findHighestTemp, calcScreenWidth, createForecastIcon, convertDate, getTempColor, convertPascalCase, getRegularTime};
 })();
 
   export default util;

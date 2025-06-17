@@ -3,33 +3,28 @@ import info from './info.js';
 import callApi from './callAPI.js';
 let hourlyCaro = (function(){
   const totalCardNum = 15;
-  const caroHidden = document.querySelector('#caro-hidden');
   const hourlyChartCanvas = document.querySelector('#hourlyChartCanvas');
+  const caroHidden = document.querySelector('#caro-hidden');
+  const hourlyChartResizeDiv = document.querySelector('#hourlyChartResizeDiv');
   const ctx = document.getElementById('hourlyChartCanvas').getContext('2d');
   let cardNum = 0;
   let caroIndex = 0;
-
-  const chartData = {
-    labels: ['1am', '2am', '3am', '4am', '5am', '6am', '7am', '8am', '9am', '10am', '11am', '12am', '1pm', '2pm', '3pm', '4pm', '5pm', '6pm', '7pm', '8pm', '9pm', '10pm', '11pm', '12pm'],
-    datasets: [
-      {
-        label: 'Temperature',
-        data: [10],
-        borderColor: 'rgba(75, 192, 192, 1)',
-        backgroundColor: 'rgba(73, 129, 129, 0.2)',
-        borderWidth: 2,
-        tension: 0.4, // Smooth curve
-      },
-    ],
-  };
-  
+  let borderLeyway = 3;
   const options = {
-    responsive: true,
+    responsive: false,
     animation: false,
     scales: {
       y: {
-            min: -35, // Set the minimum value
-            max: 135, // Set the maximum value
+        min: 0, // Set the minimum value
+        max: 100, // Set the maximum value
+        grid: {
+          display: false          
+        }
+      },
+      x: {
+        grid: {
+          display: false
+        }
       }
     },
     indexAxis: 'x',
@@ -45,23 +40,51 @@ let hourlyCaro = (function(){
   
   let chart = new Chart(ctx, {
     type: 'line',
-    data: chartData,
+    data: info.chartData,
     options: options,
   });
-
   function calcCaro() {
     caroHidden.style.width = window.innerWidth+"px";
     cardNum = Math.floor(caroHidden.offsetWidth/150);
     caroHidden.style.width = 150*cardNum+(cardNum-1)*10+"px";
   }
-
+  function changeGraphSize() {
+    if (info.screenSize == "phone") {
+      hourlyChartCanvas.width = "330";
+      hourlyChartCanvas.height = "165";
+      info.chartData.datasets[0].pointRadius = 3;
+    } else if (info.screenSize == "tablet") {
+      hourlyChartCanvas.width = "400";
+      hourlyChartCanvas.height = "200";
+      info.chartData.datasets[0].pointRadius = 4;
+    } else {
+      hourlyChartCanvas.width = "600";
+      hourlyChartCanvas.height = "300";
+      info.chartData.datasets[0].pointRadius = 6;
+    }
+  }
+  function updateActiveChartPoint() {
+    info.chartData.datasets[0].pointBackgroundColor = [];
+    for (let i = 0; i<info.chartData.labels.length; i++) {
+      let labelMilitaryHour = info.chartData.labels[i];
+      if (labelMilitaryHour.includes("PM")) {
+        labelMilitaryHour = parseInt(info.chartData.labels[i]) + 12;
+      } else {
+        labelMilitaryHour = parseInt(info.chartData.labels[i]);
+      }
+      if (util.getCurrentHour() == labelMilitaryHour) {
+        info.chartData.datasets[0].pointBackgroundColor.push('rgb(2, 27, 255)');
+      } else {
+        info.chartData.datasets[0].pointBackgroundColor.push('rgb(198, 91, 3)');
+      }
+    }
+    drawHourlyChart();
+  }
   function updateCaro() {
     hourSelectionDiv.style.left = -1*caroIndex*(cardNum*150 + cardNum*10) + "px";
     updateCaroBtnVisibility();
   }
   function moveCarouselRight() {
-    //caroHidden
-    //hourSelectionDiv
     caroIndex++;
     updateCaro();
   }
@@ -81,12 +104,14 @@ let hourlyCaro = (function(){
       hourlyRightCarousel.style.visibility = "visible";
     }
   }
-
   function drawHourlyChart() {
     chart.destroy();
+    options.scales.y.max = (Math.floor((util.findHighestTemp())/10)+1)*10;
+    options.scales.y.min = (Math.floor((util.findLowestTemp())/10)-1)*10;
+    changeGraphSize();
     chart = new Chart(ctx, {
       type: 'line',
-      data: chartData,
+      data: info.chartData,
       options: options,
     });
   }
@@ -98,6 +123,7 @@ function updateDayWeather(days) {
       //look here later. Get and update method needed?
       info.currentDay = i;
       callApi.getHourlyTemp(info.currentDay);
+      //updateActiveChartPoint();
     })
     let cardDate = document.createElement('p');
     let cardIcon = document.createElement('div');
@@ -124,9 +150,10 @@ function updateDayWeather(days) {
   }
   //how many card in carousel
   hourlyCaro.calcCaro();
+  updateActiveChartPoint();
 }
 
-  return {calcCaro, moveCarouselRight, moveCarouselLeft, updateCaroBtnVisibility, drawHourlyChart, chartData, updateDayWeather};
+  return {options, calcCaro, moveCarouselRight, moveCarouselLeft, updateCaroBtnVisibility, drawHourlyChart, updateDayWeather};
 })();
 
 export default hourlyCaro;

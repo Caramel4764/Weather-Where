@@ -273,7 +273,6 @@ p {
 }
 
 #hourSelectionDiv {
-  background-color: rgb(243, 156, 80);
   display:grid;
   justify-content: left;
   align-items: center;
@@ -287,9 +286,18 @@ p {
 }
 #caro-hidden {
   overflow:hidden;
+  border-radius: 10px;
 }
+#hourlyChartResizeDiv {
+  width: 80vw;
+  height: 300px;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .hourlyCard {
-  background-color: burlywood;
+  background-color: rgb(239, 171, 75);
   box-sizing:border-box;
   display:grid;
   width: 150px;
