@@ -5,6 +5,8 @@ import hourlyCaro from './hourlyCaro.js';
 
 
 let uiUpdate = (function(){
+  const overviewMenu = document.querySelector('#min-overviewstat');
+  const forcastDiv = document.querySelector('#forcast-div');
   const cityName = document.querySelector("#cityName");
   const temp = document.querySelector("#temp");
   const tempMax = document.querySelector('#tempMax');
@@ -34,16 +36,28 @@ let uiUpdate = (function(){
     temp.textContent = currDay.temp;
     tempMax.textContent = currDay.tempmax;
     tempMin.textContent = currDay.tempmin;
-    overviewBg.style.backgroundColor = util.getTempColor(currDay.temp);
+    //overviewBg.style.backgroundColor = util.getTempColor(currDay.temp);
+    forcastDiv.style.backgroundColor = util.getTempColor(currDay.temp);
+    overviewMenu.style.backgroundColor = util.getTempColor(currDay.temp);
     rainChance.textContent = currDay.precip;
     windSpeed.textContent = currDay.windgust;
 
     let regularTimeSet = util.getRegularTime(currDay.sunset);
     let regularTimeRise = util.getRegularTime(currDay.sunrise);
-    sunsetTime.textContent = `${regularTimeSet.hour}:${regularTimeSet.minute}`;
-    sunSetAmPm.textContent = regularTimeSet.amPm;
-    sunriseTime.textContent = `${regularTimeRise.hour}:${regularTimeRise.minute}`;
-    sunRiseAmPm.textContent = regularTimeSet.amPm;
+    if (regularTimeSet) {
+      sunsetTime.textContent = `${regularTimeSet.hour}:${regularTimeSet.minute}`;
+      sunSetAmPm.textContent = regularTimeSet.amPm;
+    } else {
+      sunsetTime.textContent = `N/A`;
+      sunSetAmPm.textContent = "";
+    }
+    if (regularTimeRise) {
+      sunriseTime.textContent = `${regularTimeRise.hour}:${regularTimeRise.minute}`;
+      sunRiseAmPm.textContent = regularTimeSet.amPm;
+    } else {
+      sunriseTime.textContent = `N/A`;
+      sunRiseAmPm.textContent = "";
+    }
     humidity.textContent = currDay.humidity;
     cloudyness.textContent = currDay.cloudcover;
     util.getRegularTime(currDay.sunset);
@@ -52,7 +66,7 @@ let uiUpdate = (function(){
     }
     forcast.innerHTML = "";
     condition.textContent = data.currentConditions.conditions;
-    let forecastIcon = util.createForecastIcon(data.currentConditions.conditions);
+    let forecastIcon = util.createForecastIcon(data.currentConditions.conditions, 130);
     forcast.appendChild(forecastIcon);
     hourlyCaro.updateDayWeather(data.days);
     callApi.getHourlyTemp(info.currentDay);

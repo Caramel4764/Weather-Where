@@ -88,6 +88,7 @@ let util = (function(){
     } else if (temp > 10) {
       color = "#3C66FF";
     } else if (temp > 0) {
+      //ex
       color = "#0339FF";
     } else {
       color = "#002DC0";
@@ -112,6 +113,9 @@ let util = (function(){
     return converted;
   }
   function getRegularTime(militaryTime) {
+    if (!militaryTime) {
+      return false;
+    }
     let hour = Number(militaryTime.substring(0,2));
     let minute = militaryTime.substring(3,5)
     if (hour>12) {

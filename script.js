@@ -35,6 +35,6 @@ hourlyRightCarousel.addEventListener('click', hourlyCaro.moveCarouselRight);
 info.screenSize = util.calcScreenWidth();
 hourlyCaro.updateCaroBtnVisibility();
 
-uiUpdate.updateWeatherByCity('Sawtooth').then(function(){
+uiUpdate.updateWeatherByCity('antarctica').then(function(){
   lunarCycle.updateMoonPhase();
 })

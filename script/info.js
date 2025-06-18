@@ -21,7 +21,7 @@ let info = (function(){
       },
     ],
   };
-  return {currentDay, city, APIkey, chartData};
+  return {currentDay, city, APIkey, chartData, data };
 }())
 
 export default info

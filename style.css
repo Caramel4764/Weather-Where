@@ -89,6 +89,7 @@ p {
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
   width: 90vw;
   padding-top:60px;
+  background-color: rgb(231, 231, 231);
 }
 #overview-section {
   display:flex;
@@ -124,7 +125,9 @@ p {
   display:grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 15px;
-  margin: 45px;
+  padding: 50px 50px;
+  border-radius: 10px;
+  margin-top: 40px;
 }
 .card div div {
   display:flex;
@@ -200,10 +203,13 @@ p {
   background-color: rgb(255, 255, 255);
   border: 6px solid black;
   flex-direction: column;
-  width: 130px;
-  height: 130px;
+  width: 170px;
+  height: 170px;
   border-radius: 50%;
   margin-bottom: 10px;
+}
+.forecast-icon {
+  font-size: 150px;
 }
 #forcast-div h3{
   margin: 0;
@@ -220,9 +226,7 @@ p {
   margin-bottom: 15px;
   color:rgb(80, 80, 80)
 }
-.forecast-icon {
-  font-size: 100px;
-}
+
 
 #hourly {
   margin-top: 30px;
