@@ -232,7 +232,8 @@ p {
   align-items: center;
   justify-content: center;
   gap: 20px;
-  padding: 30px 0px;
+  padding: 70px 0px;
+  padding-bottom: 120px;
 
 }
 #currentTemp-icon-div {
@@ -282,7 +283,7 @@ p {
   grid-template-columns: 1fr;
   grid-auto-flow: column;
   position: relative;
-  transition: left 1s ease-in-out;
+  transition: left 0.5s ease-in-out;
 }
 #caro-hidden {
   overflow:hidden;
@@ -308,4 +309,46 @@ p {
   align-items: center;
   text-align: center;
   gap: 10px;
+}
+#moon {
+  background-color: rgb(4, 4, 86);
+  color: white;
+  padding: 40px;
+}
+#moonOverviewDiv {
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 20px;
+}
+.moon-icon {
+  width: 70px;
+}
+.moonCard {
+  background-color: black;
+  width: 100px;
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 40px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.537);
+}
+#moonList {
+  margin: 15px;
+  display:flex;
+  justify-content: left;
+  align-items: center;
+  gap: 30px;
+  overflow-x:scroll;
+  scrollbar-width: none;
+  padding: 10px;
+}
+
+
+.moonName {
+  padding: 15px 0px;
+  text-align:center;
 }

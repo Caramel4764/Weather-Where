@@ -3,6 +3,8 @@ import hourlyCaro from './script/hourlyCaro.js';
 import info from './script/info.js';
 import uiUpdate from './script/uiUpdate.js';
 import util from './script/util.js';
+import lunarCycle from './script/lunarCycle.js';
+
 const searchBar = document.querySelector('#searchbar');
 const searchBtn = document.querySelector('#searchbar-send-btn');
 const hourlyRightCarousel = document.querySelector('#hourlyRightCarousel');
@@ -31,5 +33,8 @@ hourlyLeftCarousel.addEventListener('click', hourlyCaro.moveCarouselLeft);
 hourlyRightCarousel.addEventListener('click', hourlyCaro.moveCarouselRight);
 
 info.screenSize = util.calcScreenWidth();
-uiUpdate.updateWeatherByCity('Sawtooth');
 hourlyCaro.updateCaroBtnVisibility();
+
+uiUpdate.updateWeatherByCity('Sawtooth').then(function(){
+  lunarCycle.updateMoonPhase();
+})
