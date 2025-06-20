@@ -26,16 +26,27 @@ let uiUpdate = (function(){
   const sunriseTime = document.querySelector("#sunRiseTime");
   const cloudyness = document.querySelector("#cloudyness");
   const humidity = document.querySelector("#humidity");
-
+  function getCurrDay(){
+    return info.data.days[0];
+  }
   async function updateWeatherByCity (city) {
     info.city = util.convertPascalCase(city);
     let data = await callApi.fetchWeather(info.city);
     console.log(data);
     cityName.textContent = data.address;
     let currDay = data.days[0]
-    temp.textContent = currDay.temp;
-    tempMax.textContent = currDay.tempmax;
-    tempMin.textContent = currDay.tempmin;
+    if (info.isFahrenheit) {
+      temp.textContent = currDay.temp;
+      tempMax.textContent = currDay.tempmax;
+      tempMin.textContent = currDay.tempmin;
+    } else {
+      temp.textContent = util.fahrenheitToCelsius(currDay.temp);
+      tempMax.textContent = util.fahrenheitToCelsius(currDay.tempmax);
+      tempMin.textContent = util.fahrenheitToCelsius(currDay.tempmin);
+    }
+    temp.setAttribute('id', currDay.temp);
+    tempMax.setAttribute('id', currDay.tempmax);
+    tempMin.setAttribute('id', currDay.tempmin);
     //overviewBg.style.backgroundColor = util.getTempColor(currDay.temp);
     forcastDiv.style.backgroundColor = util.getTempColor(currDay.temp);
     overviewMenu.style.backgroundColor = util.getTempColor(currDay.temp);
@@ -70,13 +81,19 @@ let uiUpdate = (function(){
     forcast.appendChild(forecastIcon);
     hourlyCaro.updateDayWeather(data.days);
     callApi.getHourlyTemp(info.currentDay);
-    currTempText.textContent = data.days[0].hours[util.getCurrentHour()].temp;
+    if (info.isFahrenheit) {
+      currTempText.textContent = data.days[0].hours[util.getCurrentHour()].temp;
+    } else {
+      currTempText.textContent = util.fahrenheitToCelsius(data.days[0].hours[util.getCurrentHour()].temp);
+    }
+    currTempText.setAttribute('id', data.days[0].hours[util.getCurrentHour()].temp);
     currentTempIconDiv.innerHTML = "";
     currentTempIconDiv.appendChild(util.createForecastIcon(data.days[0].conditions, 70));
   }
 
   function displayWarning(warnings) {
     danger.innerHTML = "";
+    danger.style.display = "block";
     for(let i = 0; i<warnings.length; i++) {
       let div = document.createElement('div');
       div.classList.add('danger-bg', 'flex');
@@ -90,7 +107,7 @@ let uiUpdate = (function(){
       dangerDesc.textContent = warnings[i].description;
     }
   }
-  return {displayWarning, updateWeatherByCity}
+  return {displayWarning, updateWeatherByCity, getCurrDay}
 })()
 
 export default uiUpdate

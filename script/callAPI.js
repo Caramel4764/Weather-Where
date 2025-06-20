@@ -14,17 +14,14 @@ let callAPI = (function(){
     }
   }
   async function getHourlyTemp (dayFromToday) {
-    let data = await fetchWeather(info.city).then(
-      function(data) {
-        let upcomingTemps = [];
-        for (let i = 0; i<data.days[dayFromToday].hours.length; i++) {
-            upcomingTemps.push(data.days[dayFromToday].hours[i].temp);
-        }
-        info.chartData.datasets[0].data = upcomingTemps;
+    let data = info.data;
+      let upcomingTemps = [];
+      for (let i = 0; i<data.days[dayFromToday].hours.length; i++) {
+        upcomingTemps.push(data.days[dayFromToday].hours[i].temp);
       }
-    ).then(function() {
+      info.ogHourlyData = upcomingTemps;
+      info.chartData.datasets[0].data = upcomingTemps;
       hourlyCaro.drawHourlyChart();
-    })
   }
 
   return {getHourlyTemp, fetchWeather};

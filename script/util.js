@@ -32,7 +32,35 @@ let util = (function(){
     }
     return highestTemp;
   }
-
+  function getTempUnit() {
+    if (info.isFahrenheit) {
+      return "°F";
+    } else {
+      return "°C";
+    }
+  }
+  function updateUnits() {
+    let degree = document.querySelectorAll(".degree");
+    let temp = document.querySelectorAll(".temp");
+    for (let i = 0; i<degree.length; i++) {
+      degree[i].textContent = getTempUnit();
+    }
+    for (let i = 0; i<temp.length;i++) {
+      if (info.isFahrenheit) {
+        temp[i].textContent = temp[i].id;
+      } else {
+        temp[i].textContent = fahrenheitToCelsius(temp[i].id);
+      }
+    }
+  }
+  function celsiusToFahrenheit(celsius) {
+    let fahrenheit = Math.floor((celsius * (9/5) + 32)*10)/10;
+    return fahrenheit;
+  }
+  function fahrenheitToCelsius(fahrenheit) {
+    let celsius = Math.floor((fahrenheit - 32) * (5/9)*10)/10;
+    return celsius;
+  }
   function createForecastIcon(forecast, size = 100) {
     let forecastIcon = document.createElement('i');
     if (forecast.indexOf("Hail") != -1) {
@@ -137,7 +165,7 @@ let util = (function(){
     return size;
   }
   
-  return {getCurrentHour, findLowestTemp, findHighestTemp, calcScreenWidth, createForecastIcon, convertDate, getTempColor, convertPascalCase, getRegularTime};
+  return {updateUnits, getTempUnit, celsiusToFahrenheit, fahrenheitToCelsius, getCurrentHour, findLowestTemp, findHighestTemp, calcScreenWidth, createForecastIcon, convertDate, getTempColor, convertPascalCase, getRegularTime};
 })();
 
   export default util;

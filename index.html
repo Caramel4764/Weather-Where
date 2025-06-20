@@ -13,17 +13,20 @@
 </head>
 <body>
   <header id="overview">
-    <div id="searchbar-div">
-      <svg id="searchIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-      </svg>
-      <input id="searchbar" placeholder="Please Enter a City, a Country, or a State...">
-      <button id="searchbar-send-btn">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-send-check-fill" viewBox="0 0 16 16">
-          <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 1.59 2.498C8 14 8 13 8 12.5a4.5 4.5 0 0 1 5.026-4.47zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"/>
-          <path d="M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0m-1.993-1.679a.5.5 0 0 0-.686.172l-1.17 1.95-.547-.547a.5.5 0 0 0-.708.708l.774.773a.75.75 0 0 0 1.174-.144l1.335-2.226a.5.5 0 0 0-.172-.686"/>
+    <div id="unitConv-search-divider">
+      <div id="searchbar-div">
+        <svg id="searchIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+          <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
         </svg>
-      </button>
+        <input id="searchbar" placeholder="Please Enter a City, a Country, or a State...">
+        <button id="searchbar-send-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-send-check-fill" viewBox="0 0 16 16">
+            <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 1.59 2.498C8 14 8 13 8 12.5a4.5 4.5 0 0 1 5.026-4.47zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"/>
+            <path d="M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0m-1.993-1.679a.5.5 0 0 0-.686.172l-1.17 1.95-.547-.547a.5.5 0 0 0-.708.708l.774.773a.75.75 0 0 0 1.174-.144l1.335-2.226a.5.5 0 0 0-.172-.686"/>
+          </svg>
+        </button>
+      </div>
+      <button class='degree' id="unitConvBtn">°F</button>
     </div>
   </header>
 
@@ -56,7 +59,7 @@
               </div>
             </div>
             <div class='flex' id="main-overview-temp">
-              <h1 id="temp">34.5</h1><span class="temp-unit">°F</span>
+              <h1 class='temp' id="temp">34.5</h1><span class="degree temp-unit">°F</span>
             </div>
             <div id="minor-overview-temp">
               <div id="temp-card">
@@ -66,7 +69,7 @@
                   </svg>
                   <p class="temp-desc">Low</p>
                 </div>
-                <div class="flex" id="low-overview-temp"><h3 id="tempMin">34.5</h3><span class="temp-unit">°F</span></div>
+                <div class="flex" id="low-overview-temp"><h3 class='temp' id="tempMin">34.5</h3><span class="degree temp-unit">°F</span></div>
               </div>
               <div id="temp-card">
                 <div class="flex">
@@ -74,7 +77,7 @@
                     <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5"/>
                   </svg>
                 <p class="temp-desc">High</p></div>
-                <div class='flex' id="high-overview-temp"><h3 id="tempMax">34.5</h3><span class="temp-unit">°F</span></div>
+                <div class='flex' id="high-overview-temp"><h3 class='temp' id="tempMax">34.5</h3><span class="degree temp-unit">°F</span></div>
               </div>
             </div>
           </div>
@@ -161,8 +164,8 @@
       <div id="currentTempInfoDiv">
         <p>Currently</p>
         <div class="flex">
-          <h1 id="currTempText">00</h1>
-          <span class="minorTextInfo">°F</span>
+          <h1 id="currTempText" class='temp'>00</h1>
+          <span class="minorTextInfo degree">°F</span>
         </div>
       </div>
     </div>

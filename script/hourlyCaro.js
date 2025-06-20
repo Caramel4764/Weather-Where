@@ -9,7 +9,7 @@ let hourlyCaro = (function(){
   const ctx = document.getElementById('hourlyChartCanvas').getContext('2d');
   let cardNum = 0;
   let caroIndex = 0;
-  let borderLeyway = 3;
+  let borderLeyway = 0;
   const options = {
     responsive: false,
     animation: false,
@@ -106,9 +106,22 @@ let hourlyCaro = (function(){
   }
   function drawHourlyChart() {
     chart.destroy();
-    options.scales.y.max = (Math.floor((util.findHighestTemp())/10)+1)*10;
-    options.scales.y.min = (Math.floor((util.findLowestTemp())/10)-1)*10;
+    if (info.isFahrenheit) {
+      options.scales.y.max = ((Math.floor(((util.findHighestTemp()))/10)+1)*10)+borderLeyway;
+      options.scales.y.min = ((Math.floor(((util.findLowestTemp()))/10)-1)*10)-borderLeyway;
+    } else {
+      options.scales.y.max = ((Math.floor((util.fahrenheitToCelsius(util.findHighestTemp()))/10)+1)*10)+borderLeyway;
+      options.scales.y.min = ((Math.floor((util.fahrenheitToCelsius(util.findLowestTemp()))/10)-1)*10)-borderLeyway;
+    }
     changeGraphSize();
+    for (let i = 0; i<info.chartData.datasets[0].data.length; i++) {
+      if (info.isFahrenheit) {
+        info.chartData.datasets[0].data[i] = info.ogHourlyData[i];
+        
+      } else {
+        info.chartData.datasets[0].data[i] = util.fahrenheitToCelsius(info.ogHourlyData[i]);
+      }
+    }
     chart = new Chart(ctx, {
       type: 'line',
       data: info.chartData,
@@ -117,18 +130,19 @@ let hourlyCaro = (function(){
   }
   //creates the 15 day cards
 function updateDayWeather(days) {
+  hourSelectionDiv.innerHTML = "";
   for (let i = 0; i<days.length; i++) {
     let hourlyCard = document.createElement('div');
     hourlyCard.addEventListener('click', () => {
       //look here later. Get and update method needed?
       info.currentDay = i;
       callApi.getHourlyTemp(info.currentDay);
-      //updateActiveChartPoint();
     })
     let cardDate = document.createElement('p');
     let cardIcon = document.createElement('div');
     let cardTemp = document.createElement('div');
     let cardTempText = document.createElement('p');
+    let temp = document.createElement('p');
     let cardIconI = util.createForecastIcon(days[i].conditions, 50);
     hourlyCard.classList.add('hourlyCard');
     cardDate.classList.add('hourlyCardDate');
@@ -139,12 +153,23 @@ function updateDayWeather(days) {
     }
     cardIcon.classList.add('hourlyIcon');
     cardTemp.classList.add('flex');
-    cardTemp.textContent = days[i].temp;
+    temp.classList.add('temp');
+    if (info.isFahrenheit) {
+      temp.textContent = days[i].temp;
+      cardTempText.textContent = "°F";
+    } else {
+      temp.textContent = util.fahrenheitToCelsius(days[i].temp);
+      cardTempText.textContent = "°C";
+    }
+    temp.setAttribute('id', days[i].temp);
+
     cardTempText.classList.add('hourlyCardTemp');
+    cardTempText.classList.add('degree');
     cardIcon.appendChild(cardIconI);
     hourlyCard.appendChild(cardDate);
     hourlyCard.appendChild(cardIcon);
     hourlyCard.appendChild(cardTemp);
+    cardTemp.appendChild(temp);
     cardTemp.appendChild(cardTempText);
     hourSelectionDiv.appendChild(hourlyCard);
   }
@@ -153,7 +178,7 @@ function updateDayWeather(days) {
   updateActiveChartPoint();
 }
 
-  return {options, calcCaro, moveCarouselRight, moveCarouselLeft, updateCaroBtnVisibility, drawHourlyChart, updateDayWeather};
+  return {updateActiveChartPoint, options, calcCaro, moveCarouselRight, moveCarouselLeft, updateCaroBtnVisibility, drawHourlyChart, updateDayWeather};
 })();
 
 export default hourlyCaro;
